@@ -1,8 +1,9 @@
- var gameState=5;
+ var gameState=1;
  var babyi, thiefr, thiefl, policer , policel, craftingi ,bottlei, capi, milki;
  var walls = [],idc, gWalls = [];
  var uFlag= false;
  var gFlag= false;
+ var timer = 200;
 function preload(){
   babyi =  loadImage("baby image.png");
   policer =  loadImage("police r.png");
@@ -15,6 +16,9 @@ function preload(){
   craftingi =  loadImage("crafting.png");
   idci =  loadImage("idc.png");
   babd = loadImage("babyd.png");
+  guni  = loadImage("gun.png");
+  sguni = loadImage("shrink gun.png")
+  tsu = loadImage("t.png")
 }
 
 function setup(){
@@ -22,7 +26,8 @@ function setup(){
 
   
   detect = createSprite(25,375,15,30);
-  thief = createSprite(25,365,15,10);
+  thief = createSprite(25,365,8,8);
+  tpe = createSprite(100000,100000,5,5);
   trap2 = createSprite(380,15,40,40); 
   trap = createSprite(360,35,80,80);
   diamond = createSprite(375,25,20,20);
@@ -36,6 +41,9 @@ function setup(){
   arrest = createSprite(-200,-200,400,400);
   police = createSprite(375,170,20,20);
   pollice = createSprite(20,270,20,20);
+  gun = createSprite(5000,5000,10,10);
+  sgun = createSprite(5000,5000,10,10);
+  ts = createSprite(1000000000000,101000,20,400)
   
   gWalls[0] = createSprite(350,355,20,100);
   gWalls[1] = createSprite(320,260,60,20);
@@ -44,7 +52,6 @@ function setup(){
   gWalls[4] = createSprite(315,220,20,70);
   gWalls[5] = createSprite(310,340,60,20);
   gWalls[6] = createSprite(310,290,20,40);
- 
   gWalls[7] = createSprite(235,270,20,150);
   gWalls[8] =createSprite(55,150,20,380);
   gWalls[9] = createSprite(130,180,70,20);
@@ -56,6 +63,7 @@ function setup(){
   gWalls[15] = createSprite(175,150,20,170);
   gWalls[16] = createSprite(300,100,20,200);
   gWalls[17] = createSprite(220,88,80,20);
+  gWalls[18] = createSprite(235,145,20,100);
   for(var i=0;i<gWalls.length;i++){
     gWalls[i].visible = false;
   }
@@ -147,6 +155,15 @@ function setup(){
      
   pollice.addImage (policer);
   pollice.scale = 0.1;
+
+  gun.addImage(guni);
+  gun.scale = 0.05;
+
+  sgun.addImage(sguni);
+  sgun.scale = 0.1
+
+  ts.addImage(tsu);
+  ts.scale =0.8;
    
   arrest.shapeColor="green";
   lazar.shapeColor="red";
@@ -172,7 +189,7 @@ if(gameState === 1){
     lazar1.velocityY=-5;
     police.velocityX=-3;
     pollice.velocityX = 3;
-}
+  }
 
   if(thief.isTouching(trap)){
     trap.shapeColor="red";
@@ -236,7 +253,7 @@ if(gameState === 1){
   police.bounceOff(edges);
   pollice.bounceOff(edges);
 
-}
+ }
 
   if(gameState === 0){
     fill("red");
@@ -294,7 +311,7 @@ if(gameState === 1){
       thief.addImage(policel)
     }
   }
-}
+  }
 
   
 
@@ -326,8 +343,10 @@ if(gameState === 1){
         text("Need Gun",50,250);
       else if(gFlag === true && uFlag === false)
         text("Need Police Uniform",50,250); 
-      //else
-        //gameState = 2;  
+      else {
+        wall4.destroy()
+      }
+        
       
       thief.collide(wall4);
       tp1.shapeColor="blue";
@@ -359,7 +378,7 @@ if(gameState === 1){
   
       thief.x=200;
       thief.y=25;
-      gameState=5;
+      gameState=2;
     }
   }
   
@@ -451,6 +470,83 @@ if(gameState === 1){
      gWalls[i].visible = true;
      thief.collide(gWalls[i]);
     }
+    gun.x=150;
+    gun.y=205;
+
+    sgun.x = 160;
+    sgun.y = 250;
+
+    tpe.x=200;
+    tpe.y=200;
+
+
+    if(thief.isTouching(sgun)){
+      thief.x=200;
+      thief.y=100;
+    }
+
+    if(thief.isTouching(gun)){
+      gun.x = 120120
+      text("Gun Aquired",200,200)
+      text("Tsunami Incoming",200,10)
+      background("red");
+      gFlag = true;
+    }
+
+    if(gun.x === 120120 ){
+      textSize(20);
+      fill("black")
+      text("Tsunami Incoming",120,20); 
+      gameState = 10;
+    }
+    
+    if(thief.isTouching(tpe)){
+      thief.x = 150;
+      thief.y = 205;
+      tpe.destroy()
+      gWalls[9].destroy()
+      detect.destroy()
+    }
+
+
+  }
+
+  if(gameState === 2){
+    text("Click 'E' to enter the sewers",200,100);
+    if(keyDown("E")){
+      gameState = 5
+      thief.x = 25;
+      thief.y = 25;
+    }
+  }
+
+  if(gameState === 10){
+    ts.x=0;
+    ts.y = 240;
+    gameState = 9
+  }
+
+  if(gameState === 9){
+    ts.velocityX = 2
+    if(ts.x === 60){
+      gameState = 8
+    }
+  }
+
+  if(gameState === 8){
+    background("black")
+    ts.destroy()
+      for(var i=0;i<gWalls.length;i++){
+        gWalls[i].destroy()
+      }
+    sgun.destroy();
+    thief.x=200;
+    thief.y=20;
+    thief.visible = false
+    timer--
+    if(timer === 0){
+      changeState()
+    }
   }
 
   thief.bounceOff(edges);
@@ -464,6 +560,12 @@ if(gameState === 1){
   fill(0);
   textSize(10);
   text(mouseX + "," + mouseY, mouseX,mouseY);
+}
+
+function changeState(){
+  gameState = 3
+  thief.visible = true;
+  console.log("changed")
 }
 
 
